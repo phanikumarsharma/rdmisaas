@@ -26,6 +26,11 @@ Param(
     [Parameter(Mandatory = $True)]
     [ValidateNotNullOrEmpty()]
     [string] $Location,
+    
+    [Parameter(Mandatory = $False)]
+    [ValidateNotNullOrEmpty()]
+    [string] $fileURI,
+
 
     [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
@@ -50,11 +55,22 @@ Param(
     [Parameter(Mandatory = $True)]
     [ValidateNotNullOrEmpty()]
     [string] $ResourceURL,
-
-    [Parameter(Mandatory = $True)]
+    
+    [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
     [string] $CodeBitPath,
    
+    [Parameter(Mandatory=$True)]
+    [String] $Username,
+
+    [Parameter(Mandatory=$True)]
+    [string] $Password,
+
+    [Parameter(Mandatory=$True)]
+    [String] $vmUsername,
+
+    [Parameter(Mandatory=$True)]
+    [string] $vmPassword,
     [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
     [string] $WebAppDirectory = ".\msft-rdmi-saas-web",
@@ -73,9 +89,17 @@ Param(
    
       
 )
-       
+
+
 try
 {
+
+               
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        Invoke-WebRequest -Uri $fileURI -OutFile "C:\RDmiSaaS.zip"
+        New-Item -Path "C:\RDmiSaaS" -ItemType directory -Force -ErrorAction SilentlyContinue
+        Expand-Archive "C:\RDmiSaaS.zip" -DestinationPath "C:\RDmiSaaS" -ErrorAction SilentlyContinue
+
         Write-Output "Checking if AzureRm module is installed.."
         $azureRmModule = Get-Module AzureRM -ListAvailable | Select-Object -Property Name -ErrorAction SilentlyContinue
         if (!$azureRmModule.Name) {
