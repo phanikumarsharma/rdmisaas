@@ -117,11 +117,11 @@ try
 
         $SecurePass = $Password | ConvertTo-SecureString -asPlainText -Force
         $Credential = New-Object System.Management.Automation.PSCredential($Username,$SecurePass)
-        Login-AzureRmAccount -Credential $Credential
-
+        
 
         Write-Output "Login Into Azure RM.."
-        Login-AzureRmAccount
+
+        Login-AzureRmAccount -Credential $Credential
 
         Write-Output "Selecting Azure Subscription.."
         Select-AzureRmSubscription -SubscriptionId $SubscriptionId
