@@ -27,7 +27,7 @@ Param(
     [ValidateNotNullOrEmpty()]
     [string] $Location,
     
-    [Parameter(Mandatory = $True)]
+    [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
     [string] $fileURI,
 
@@ -90,17 +90,11 @@ Param(
       
 )
        
-        Invoke-WebRequest -Uri $fileURI -OutFile "C:\RDmiSaaS.zip"
-        New-Item -Path "C:\RDmiSaaS" -ItemType directory -Force -ErrorAction SilentlyContinue
-        Expand-Archive "C:\RDmiSaaS.zip" -DestinationPath "C:\RDmiSaaS" -ErrorAction SilentlyContinue
-        Set-Location "C:\RDmiSaaS"
 
-        $SecurePass = $Password | ConvertTo-SecureString -asPlainText -Force
-$Credential = New-Object System.Management.Automation.PSCredential($Username,$SecurePass)
-$SecurePass=ConvertTo-SecureString -String $vmPassword -AsPlainText -Force
-$localcred=New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($vmUsername, $Securepass)
-Invoke-Command -ComputerName localhost -Credential $localcred -ScriptBlock{
-param($SubscriptionId,$Username,$Password,$ResourceGroupName)
+Invoke-WebRequest -Uri $fileURI -OutFile "C:\RDmiSaaS.zip"
+New-Item -Path "C:\RDmiSaaS" -ItemType directory -Force -ErrorAction SilentlyContinue
+Expand-Archive "C:\RDmiSaaS.zip" -DestinationPath "C:\RDmiSaaS" -ErrorAction SilentlyContinue
+Set-Location "C:\RDmiSaaS"
 
 try
 {
