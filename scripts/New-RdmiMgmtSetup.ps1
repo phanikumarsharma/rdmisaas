@@ -115,6 +115,11 @@ try
         Write-Output "Importing AzureRm Module.."
         Import-Module AzureRm -ErrorAction SilentlyContinue -Force
 
+        $SecurePass = $Password | ConvertTo-SecureString -asPlainText -Force
+        $Credential = New-Object System.Management.Automation.PSCredential($Username,$SecurePass)
+        Login-AzureRmAccount -Credential $Credential
+
+
         Write-Output "Login Into Azure RM.."
         Login-AzureRmAccount
 
