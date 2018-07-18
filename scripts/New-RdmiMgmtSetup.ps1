@@ -85,16 +85,14 @@ Param(
    
       
 )
-
-try
-{
-    
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest -Uri $fileURI -OutFile "C:\RDmiSaaS.zip"
     New-Item -Path "C:\RDmiSaaS" -ItemType directory -Force -ErrorAction SilentlyContinue
     Expand-Archive "C:\RDmiSaaS.zip" -DestinationPath "C:\RDmiSaaS" -ErrorAction SilentlyContinue
         
         
+try
+{
+
     Write-Output "Checking if AzureRm module is installed.."
     $azureRmModule = Get-Module AzureRM -ListAvailable | Select-Object -Property Name -ErrorAction SilentlyContinue
     if (!$azureRmModule.Name) {
