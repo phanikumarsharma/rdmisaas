@@ -26,11 +26,6 @@ Param(
     [Parameter(Mandatory = $True)]
     [ValidateNotNullOrEmpty()]
     [string] $Location,
-    
-    [Parameter(Mandatory = $False)]
-    [ValidateNotNullOrEmpty()]
-    [string] $fileURI,
-
 
     [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
@@ -55,22 +50,23 @@ Param(
     [Parameter(Mandatory = $True)]
     [ValidateNotNullOrEmpty()]
     [string] $ResourceURL,
-    
-    [Parameter(Mandatory = $False)]
-    [ValidateNotNullOrEmpty()]
-    [string] $CodeBitPath,
-   
-    [Parameter(Mandatory=$True)]
-    [String] $Username,
 
-    [Parameter(Mandatory=$True)]
+    [Parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()]
+    [string] $UserName,
+
+    [Parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()]
     [string] $Password,
 
-    [Parameter(Mandatory=$True)]
-    [String] $vmUsername,
+    [Parameter(Mandatory=$False)]
+    [ValidateNotNullOrEmpty()]
+    [string] $fileURI,
 
-    [Parameter(Mandatory=$True)]
-    [string] $vmPassword,
+    [Parameter(Mandatory = $False)]
+    [ValidateNotNullOrEmpty()]
+    [string] $CodeBitPath= "C:\msft-rdmi-saas-offering\msft-rdmi-saas-offering",
+   
     [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
     [string] $WebAppDirectory = ".\msft-rdmi-saas-web",
@@ -90,42 +86,39 @@ Param(
       
 )
 
-
 try
 {
-
-               
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        Invoke-WebRequest -Uri $fileURI -OutFile "C:\RDmiSaaS.zip"
-        New-Item -Path "C:\RDmiSaaS" -ItemType directory -Force -ErrorAction SilentlyContinue
-        Expand-Archive "C:\RDmiSaaS.zip" -DestinationPath "C:\RDmiSaaS" -ErrorAction SilentlyContinue
-
-        Write-Output "Checking if AzureRm module is installed.."
-        $azureRmModule = Get-Module AzureRM -ListAvailable | Select-Object -Property Name -ErrorAction SilentlyContinue
-        if (!$azureRmModule.Name) {
-            Write-Output "AzureRM module Not Available. Installing AzureRM Module"
-            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-            Install-Module AzureRm -Force
-            Write-Output "Installed AzureRM Module successfully"
-        } 
-        else
-        {
-            Write-Output "AzureRM Module Available"
-        }
-
-        Write-Output "Importing AzureRm Module.."
-        Import-Module AzureRm -ErrorAction SilentlyContinue -Force
-
-        $SecurePass = $Password | ConvertTo-SecureString -asPlainText -Force
-        $Credential = New-Object System.Management.Automation.PSCredential($Username,$SecurePass)
+    
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Invoke-WebRequest -Uri $fileURI -OutFile "C:\msft-rdmi-saas-offering.zip"
+    New-Item -Path "C:\msft-rdmi-saas-offering" -ItemType directory -Force -ErrorAction SilentlyContinue
+    Expand-Archive "C:\msft-rdmi-saas-offering.zip" -DestinationPath "C:\msft-rdmi-saas-offering" -ErrorAction SilentlyContinue
         
+        
+    Write-Output "Checking if AzureRm module is installed.."
+    $azureRmModule = Get-Module AzureRM -ListAvailable | Select-Object -Property Name -ErrorAction SilentlyContinue
+    if (!$azureRmModule.Name) {
+        Write-Output "AzureRM module Not Available. Installing AzureRM Module"
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+        Install-Module AzureRm -Force
+        Write-Output "Installed AzureRM Module successfully"
+    } 
+    else
+    {
+        Write-Output "AzureRM Module Available"
+    }
 
-        Write-Output "Login Into Azure RM.."
+    Write-Output "Importing AzureRm Module.."
+    Import-Module AzureRm -ErrorAction SilentlyContinue -Force
 
-        Login-AzureRmAccount -Credential $Credential
+    Write-Output "Login Into Azure RM.."
+    
+    $Psswd = $Password | ConvertTo-SecureString -asPlainText -Force
+    $Credential = New-Object System.Management.Automation.PSCredential($UserName,$Psswd)
+    Login-AzureRmAccount -Credential $Credential
 
-        Write-Output "Selecting Azure Subscription.."
-        Select-AzureRmSubscription -SubscriptionId $SubscriptionId
+    Write-Output "Selecting Azure Subscription.."
+    Select-AzureRmSubscription -SubscriptionId $SubscriptionId
 
 
     ##################################### RESOURCE GROUP #####################################
