@@ -65,7 +65,7 @@ Param(
 
     [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
-    [string] $CodeBitPath= "C:\msft-rdmi-saas-offering\msft-rdmi-saas-offering",
+    [string] $CodeBitPath= "C:\RDmiSaaS\RDmiSaaS",
    
     [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
@@ -90,9 +90,9 @@ try
 {
     
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest -Uri $fileURI -OutFile "C:\msft-rdmi-saas-offering.zip"
-    New-Item -Path "C:\msft-rdmi-saas-offering" -ItemType directory -Force -ErrorAction SilentlyContinue
-    Expand-Archive "C:\msft-rdmi-saas-offering.zip" -DestinationPath "C:\msft-rdmi-saas-offering" -ErrorAction SilentlyContinue
+    Invoke-WebRequest -Uri $fileURI -OutFile "C:\RDmiSaaS.zip"
+    New-Item -Path "C:\RDmiSaaS" -ItemType directory -Force -ErrorAction SilentlyContinue
+    Expand-Archive "C:\RDmiSaaS.zip" -DestinationPath "C:\RDmiSaaS" -ErrorAction SilentlyContinue
         
         
     Write-Output "Checking if AzureRm module is installed.."
